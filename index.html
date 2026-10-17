@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09090f">
+
+  <title>OneClick BG — AI Background Remover</title>
+
+  <meta name="description"
+    content="Remove image backgrounds with OneClick BG. Create clean, transparent product images in seconds.">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #09090f;
+      color: #f8fafc;
+      line-height: 1.6;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 7%;
+      border-bottom: 1px solid #252535;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .logo span {
+      color: #a78bfa;
+    }
+
+    .nav-button {
+      text-decoration: none;
+      color: white;
+      border: 1px solid #44445a;
+      border-radius: 9px;
+      padding: 9px 15px;
+    }
+
+    main {
+      max-width: 1050px;
+      margin: auto;
+      padding: 65px 20px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      color: #c4b5fd;
+      background: #21183b;
+      padding: 7px 13px;
+      border-radius: 30px;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(36px, 7vw, 66px);
+      line-height: 1.12;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+
+    h1 span {
+      color: #a78bfa;
+    }
+
+    .subtitle {
+      max-width: 600px;
+      margin: 0 auto 35px;
+      color: #a1a1b5;
+      font-size: 17px;
+    }
+
+    .upload-box {
+      max-width: 650px;
+      margin: auto;
+      padding: 35px 20px;
+      background: #14141f;
+      border: 2px dashed #55506e;
+      border-radius: 20px;
+    }
+
+    .upload-icon {
+      font-size: 43px;
+      margin-bottom: 10px;
+    }
+
+    .upload-box h2 {
+      font-size: 23px;
+      margin-bottom: 8px;
+    }
+
+    .muted {
+      color: #a1a1b5;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      max-width: 320px;
+      margin: 12px auto;
+      color: #ddd;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 14px 23px;
+    }
+
+    .primary {
+      background: #8b5cf6;
+      color: white;
+      width: 100%;
+      max-width: 320px;
+      margin-top: 15px;
+    }
+
+    .primary:hover {
+      background: #7c3aed;
+    }
+
+    .primary:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    #preview {
+      display: none;
+      margin: 25px auto 0;
+      max-width: 100%;
+      max-height: 350px;
+      border-radius: 12px;
+      background-color: white;
+      background-image:
+        linear-gradient(45deg, #ddd 25%, transparent 25%),
+        linear-gradient(-45deg, #ddd 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ddd 75%),
+        linear-gradient(-45deg, transparent 75%, #ddd 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+    }
+
+    #status {
+      color: #c4b5fd;
+      margin-top: 15px;
+      overflow-wrap: anywhere;
+    }
+
+    .section {
+      margin-top: 80px;
+    }
+
+    .section h2 {
+      font-size: 34px;
+      margin-bottom: 10px;
+    }
+
+    .section-intro {
+      color: #a1a1b5;
+      margin-bottom: 30px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-top: 30px;
+    }
+
+    .feature, .plan {
+      background: #14141f;
+      border: 1px solid #29293b;
+      border-radius: 16px;
+      padding: 25px;
+    }
+
+    .feature h3 {
+      margin: 10px 0;
+    }
+
+    .feature p {
+      color: #a1a1b5;
+      font-size: 14px;
+    }
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 16px;
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    .plan h3 {
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-size: 31px;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .plan p {
+      color: #b8b8c9;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .plan button {
+      width: 100%;
+      background: #272438;
+      color: white;
+    }
+
+    .highlight {
+      border-color: #8b5cf6;
+    }
+
+    footer {
+      text-align: center;
+      color: #8f8fa4;
+      padding: 30px 20px;
+      border-top: 1px solid #252535;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 16px;
+      }
+
+      main {
+        padding: 45px 16px;
+      }
+
+      .section {
+        margin-top: 60px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">OneClick <span>BG.</span></div>
+  <a class="nav-button" href="#pricing">Pricing</a>
+</header>
+
+<main>
+
+  <div class="badge">✦ Your product photos, simplified</div>
+
+  <h1>Remove backgrounds.<br><span>Keep the magic.</span></h1>
+
+  <p class="subtitle">
+    Turn ordinary photos into clean, professional images.
+    Upload your image and get ready for a perfect cutout.
+  </p>
+
+  <section class="upload-box" aria-label="Image background removal">
+    <div class="upload-icon">🪄</div>
+
+    <h2>Upload your image</h2>
+
+    <p class="muted">JPG, PNG or WebP · Maximum 10 MB</p>
+
+    <input
+      id="fileInput"
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      aria-label="Choose an image"
+    >
+
+    <br>
+
+    <button id="removeButton" class="primary" disabled>
+      ✨ Remove Background
+    </button>
+
+    <div>
+      <img id="preview" alt="Preview of your uploaded image">
+    </div>
+
+    <p id="status" role="status">
+      Choose an image to get started.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Made for your workflow</h2>
+    <p class="section-intro">
+      Simple tools for creators, sellers and growing businesses.
+    </p>
+
+    <div class="features">
+      <article class="feature">
+        <div>⚡</div>
+        <h3>Quick processing</h3>
+        <p>Designed to make background removal simple and convenient.</p>
+      </article>
+
+      <article class="feature">
+        <div>🛍️</div>
+        <h3>Product photography</h3>
+        <p>Prepare cleaner product images for online stores.</p>
+      </article>
+
+      <article class="feature">
+        <div>🖼️</div>
+        <h3>Transparent PNG</h3>
+        <p>Download transparent images once processing is connected.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="pricing">
+    <h2>Simple pricing</h2>
+    <p class="section-intro">
+      Choose the option that fits your needs.
+    </p>
+
+    <div class="plans">
+
+      <article class="plan">
+        <h3>Starter</h3>
+        <div class="price">₹49</div>
+        <p>1 image</p>
+        <button type="button" data-plan="starter">
+          Choose plan
+        </button>
+      </article>
+
+      <article class="plan highlight">
+        <h3>Creator</h3>
+        <div class="price">₹149</div>
+        <p>5 images</p>
+        <button type="button" data-plan="creator">
+          Choose plan
+        </button>
+      </article>
+
+      <article class="plan">
+        <h3>Pro</h3>
+        <div class="price">₹399</div>
+        <p>20 images</p>
+        <button type="button" data-plan="pro">
+          Choose plan
+        </button>
+      </article>
+
+      <article class="plan">
+        <h3>Business</h3>
+        <div class="price">₹999</div>
+        <p>100 images</p>
+        <button type="button" data-plan="business">
+          Choose plan
+        </button>
+      </article>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © <span id="year"></span> OneClick BG. All rights reserved.
+  <br>
+  Pricing is a proposal. Image processing and payments are not yet enabled.
+</footer>
+
+<script>
+  const fileInput = document.getElementById("fileInput");
+  const preview = document.getElementById("preview");
+  const removeButton = document.getElementById("removeButton");
+  const statusText = document.getElementById("status");
+
+  let currentPreviewUrl = null;
+
+  document.getElementById("year").textContent =
+    new Date().getFullYear();
+
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+
+    if (currentPreviewUrl) {
+      URL.revokeObjectURL(currentPreviewUrl);
+      currentPreviewUrl = null;
+    }
+
+    preview.style.display = "none";
+    removeButton.disabled = true;
+
+    if (!file) {
+      statusText.textContent = "Choose an image to get started.";
+      return;
+    }
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp"
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      fileInput.value = "";
+      statusText.textContent =
+        "Please select a JPG, PNG or WebP image.";
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      fileInput.value = "";
+      statusText.textContent =
+        "Your image must be smaller than 10 MB.";
+      return;
+    }
+
+    currentPreviewUrl = URL.createObjectURL(file);
+    preview.src = currentPreviewUrl;
+
+    preview.onload = () => {
+      preview.style.display = "block";
+    };
+
+    removeButton.disabled = false;
+    statusText.textContent =
+      "Image ready. AI processing will be connected next.";
+  });
+
+  removeButton.addEventListener("click", () => {
+    statusText.textContent =
+      "Background removal is not connected yet. This is the initial website preview.";
+  });
+
+  document.querySelectorAll("[data-plan]").forEach(button => {
+    button.addEventListener("click", () => {
+      statusText.textContent =
+        "Payments are not connected yet. No money has been charged.";
+      document.querySelector(".upload-box").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    });
+  });
+</script>
+
+</body>
+  </html>
