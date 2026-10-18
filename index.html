@@ -447,10 +447,69 @@
       "Image ready. AI processing will be connected next.";
   });
 
-  removeButton.addEventListener("click", () => {
+
+removeButton.addEventListener("click", async () => {
+  const file = fileInput.files[0];
+
+  if (!file) {
+    statusText.textContent = "Please choose an image first.";
+    return;
+  }
+
+  removeButton.disabled = true;
+  statusText.textContent = "Removing background... Please wait.";
+
+  try {
+    const formData = new FormData();
+    formData.append("image_file", file);
+
+    const response = await fetch(
+      "/.netlify/functions/remove-background",
+      {
+        method: "POST",
+        body: formData
+      }
+    );
+
+    if (!response.ok) {
+      let message = "Background removal failed. Please try again.";
+
+      try {
+        const errorData = await response.json();
+        if (errorData.error) message = errorData.error;
+      } catch (_) {}
+
+      throw new Error(message);
+    }
+
+    const resultBlob = await response.blob();
+
+    if (!resultBlob.type.includes("image")) {
+      throw new Error("The server did not return an image.");
+    }
+
+    const resultUrl = URL.createObjectURL(resultBlob);
+
+    if (currentPreviewUrl) {
+      URL.revokeObjectURL(currentPreviewUrl);
+    }
+
+    currentPreviewUrl = resultUrl;
+    preview.onload = () => {
+      preview.style.display = "block";
+      statusText.textContent =
+        "Background removed successfully! 🎉";
+    };
+    preview.src = resultUrl;
+
+  } catch (error) {
     statusText.textContent =
-      "Background removal is not connected yet. This is the initial website preview.";
-  });
+      error.message || "Something went wrong. Please try again.";
+  } finally {
+    removeButton.disabled = false;
+  }
+});
+  
 
   document.querySelectorAll("[data-plan]").forEach(button => {
     button.addEventListener("click", () => {
